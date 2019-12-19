@@ -6,7 +6,7 @@ def read_in_dataset(dataset_path, file_name, verbose=False):
 
     Keyword arguments:
     dataset_path -- A string containing the path to your dataset ('../datasets/folder/)
-    file_name -- a string containing your file name including extension (data.csv)
+    file_name.csv -- a string containing your file name including extension. Only takes csv (data.csv)
     verbose -- whether or not to print info about the dataset (True, False)
     
     Returns:
@@ -26,8 +26,8 @@ def read_in_dataset(dataset_path, file_name, verbose=False):
         print('\n------------------------------------------\n')
         print(' The first 5 rows look like this: \n')
         print(df.head())
-        print('------------------------------------------')
-        
+        print('\n------------------------------------------\n')
+        print(df.describe())
     return df
 
 
