@@ -47,3 +47,42 @@ def merge_dataset(data1, data2, common_key ):
     merged_df = data1.merge(data2, how='left', on=common_key)
     
     return merged_df
+
+
+def filter_duplicate_col(df,col):
+    """Filter out duplicates in column
+
+    Keyword arguments:
+    df1 -- dataframe containing your data
+    col -- column to remove duplicates in
+
+    Returns:
+    a pandas dataframe: df_reduced
+    """
+
+    # check for more than one record per parcel (lot)
+    df[col].nunique() == len(df)
+
+    # get counts per parcel ID
+    counts_per_parcel = df.groupby(col).size()
+
+    # Get parcel IDs that are recoded more than once
+    multiple_transaction = df[df.parcelid.isin(counts_per_parcel[counts_per_parcel > 1].index)]
+
+    # Get parcel IDs that are recorded only once
+    one_transaction = df[df.parcelid.isin(counts_per_parcel[counts_per_parcel == 1].index)]
+
+    # Print how many lots have multiple transactions
+    print(multiple_transaction.parcelid.nunique())
+
+    # Verify seperation was correct
+    assert len(df) == (len(multiple_transaction) + len(one_transaction))
+    # select random transaction from with from multiple
+    # Merge back into a single dataframe
+    df_filtered = multiple_transaction.sample(frac=1, random_state=0).groupby('parcelid').head(1)
+    df_filtered = pd.concat([one_transaction, df_filtered])
+
+    # Verify we did not lose any parcel IDs from our train merged DF
+    assert set(df_filtered[col]) == set(df[col])
+
+    return df_filtered
