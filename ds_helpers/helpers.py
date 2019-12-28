@@ -49,12 +49,13 @@ def merge_dataset(data1, data2, common_key ):
     return merged_df
 
 
-def filter_duplicate_col(df,col):
+def filter_duplicate_col(df,col,verbose=False):
     """Filter out duplicates in column
 
     Keyword arguments:
-    df1 -- dataframe containing your data
+    df -- dataframe containing your data
     col -- column to remove duplicates in
+    verbose -- whether or not to print info about the dataset (True, False)
 
     Returns:
     a pandas dataframe: df_reduced
@@ -73,7 +74,11 @@ def filter_duplicate_col(df,col):
     one_transaction = df[df.parcelid.isin(counts_per_parcel[counts_per_parcel == 1].index)]
 
     # Print how many lots have multiple transactions
-    print(multiple_transaction.parcelid.nunique())
+    if verbose:
+        print('\n------------------------------------------\n')
+        print(col + " duplicates")
+        print(multiple_transaction.parcelid.nunique())
+        print('\n------------------------------------------\n')
 
     # Verify seperation was correct
     assert len(df) == (len(multiple_transaction) + len(one_transaction))
